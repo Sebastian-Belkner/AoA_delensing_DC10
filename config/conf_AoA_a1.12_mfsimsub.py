@@ -18,8 +18,8 @@ from delensalot.config.metamodel.dlensalot_mm import *
 
 fg = '12'
 ai = 1
-desc_flag = ''
-rtreshold_delens = 1.3
+desc_flag = 'mfsimsub_Lmin3'
+rtreshold_delens = 1.2
 
 
 maskrhits_dir = '/pscratch/sd/s/sebibel/analysis/OBDmatrix/AoA/a{ai}lat.{fg}/lcut200/'.format(ai=ai, fg=fg)
@@ -33,13 +33,14 @@ misc_dir = opj(os.environ['CFS'], 'cmbs4/awg/lowellbb/reanalysis/mapphi_intermed
 data_dir = opj(os.environ['CFS'], 'cmbs4/awg/lowellbb/reanalysis/foreground_cleaned_maps')
 
 def func(data):
-    print('======================')
-    print('applying func to data')
-    print('======================')
+    # print('======================')
+    # print('applying func to data')
+    # print('======================')
     return data * np.nan_to_num(utils.cli(hp.read_map(rhits_fn)))
 
 dlensalot_model = DLENSALOT_Model(
     defaults_to = 'default_CMBS4_maskedsky_polarization',
+    validate_model = False,
     job = DLENSALOT_Job(
         jobs = ["QE_lensrec", "MAP_lensrec", "delens"]
     ),
@@ -50,9 +51,9 @@ dlensalot_model = DLENSALOT_Model(
         key = 'p_p',
         version = '',
         simidxs = np.arange(0,5),
-        simidxs_mf = np.arange(0,5),
-        TEMP_suffix = 'AoA_a{}_fg{}_{}'.format(ai,fg, desc_flag),
-        Lmin = 1, 
+        simidxs_mf = np.arange(0,0),
+        TEMP_suffix = 'AoA_a{}_fg{}_{}'.format(ai, fg, desc_flag),
+        Lmin = 3, 
         lm_max_ivf = (4000, 4000),
         lmin_teb = (70, 70, 200),
         # zbounds = ('mr_relative', 10.),
@@ -94,7 +95,7 @@ dlensalot_model = DLENSALOT_Model(
         nlev_dep = 1e4,
     ),
     qerec = DLENSALOT_Qerec(
-        tasks = ["calc_phi", "calc_blt"],
+        tasks = ["calc_phi"],
         filter_directional = 'anisotropic',
         lm_max_qlm = (4000, 4000),
         cg_tol = 1e-4
@@ -102,8 +103,8 @@ dlensalot_model = DLENSALOT_Model(
     itrec = DLENSALOT_Itrec(
         tasks = ["calc_phi", "calc_blt"],
         filter_directional = 'anisotropic',
-        itmax = 10,
-        cg_tol = 1e-4,
+        itmax = 14,
+        cg_tol = 1e-5,
         lm_max_unl = (4200, 4200),
         lm_max_qlm = (4000, 4000),
         stepper = DLENSALOT_Stepper(
@@ -120,11 +121,11 @@ dlensalot_model = DLENSALOT_Model(
     madel = DLENSALOT_Mapdelensing(
         data_from_CFS = False,
         edges = lc.AoA_edges,
-        iterations = [10],
+        iterations = [10, 12, 14],
         masks_fn = ['/pscratch/sd/s/sebibel/analysis/OBDmatrix/AoA/a{ai}lat.{fg}/lcut200/mask_tresh{rtreshold_delens}.fits'.format(ai=ai, fg=fg, rtreshold_delens=rtreshold_delens)],
         lmax = 1024,
         Cl_fid = 'obs', #this doesn't make sense right now..
-        basemap = 'obs',
+        basemap = 'lens_ffp10',
         libdir_it = None,
         binning = 'binned',
         spectrum_calculator = pospace,

@@ -53,7 +53,7 @@ dlensalot_model = DLENSALOT_Model(
         key = 'p_p',
         version = '',
         simidxs = np.arange(0,5),
-        simidxs_mf = np.arange(0,5),
+        simidxs_mf = np.arange(0,0),
         TEMP_suffix = 'AoA_a{}_fg{}_{}'.format(ai,fg, desc_flag),
         Lmin = 5, 
         lm_max_ivf = (4000, 4000),
@@ -127,7 +127,7 @@ dlensalot_model = DLENSALOT_Model(
         masks_fn = ['/pscratch/sd/s/sebibel/analysis/OBDmatrix/AoA/a{ai}lat.{fg}/lcut200/mask_tresh{rtreshold_delens}.fits'.format(ai=ai, fg=fg, rtreshold_delens=rtreshold_delens)],
         lmax = 1024,
         Cl_fid = 'obs', #this doesn't make sense right now..
-        basemap = 'obs',
+        basemap = 'lens_ffp10',
         libdir_it = None,
         binning = 'binned',
         spectrum_calculator = pospace,
